@@ -1,3 +1,3 @@
-love.graphics()
+function love.graphics()
   love.graphics.print("HEllOWORLD")
 end
