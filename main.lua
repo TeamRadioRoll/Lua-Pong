@@ -13,6 +13,7 @@ function love.load()
   Game = {}
   Game.Width = 800
   Game.Height = 600
+  Game.FullScreen = false
   ----SPACE RESERVED FOR FUNCTIONS
   function CheckInput()
     --KeyBoard Inputs for Player 1
@@ -43,17 +44,19 @@ end
 
 function love.update(dt)
   CheckInput()
-  if love.keyboard.isDown("escape") then
-    love.window.setFullscreen(true, "desktop")
-    Game.FullScreen = true
-  end
-  if Game.FullScreen == true and love.keyboard.isDown("escape") then
-    love.window.setFullscreen(false,"desktop")
-  end
 
-
+  function love.keypressed( key, scancode, isrepeat )
+    if key == "escape" then
+      if Game.FullScreen == true then
+       love.window.setFullscreen(false, "desktop")
+       Game.FullScreen = false
+    else
+        love.window.setFullscreen(true, "desktop")
+        Game.FullScreen = true
+      end
+    end
+  end
 end
-
 function love.draw()
   love.graphics.push()
   -- scaling Screen
