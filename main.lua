@@ -1,7 +1,6 @@
 function love.load()
   --Making MostImportant Variables
-  Player1 = {Cordsx = -350, Cordsy = 0, Width = 16, Height = 64}
-  Player2 = {Cordsx = 350, Cordsy = 0,Width = 16, Height = 64}
+
   AiMode = 0
 
   Game = {}
@@ -14,27 +13,54 @@ function love.load()
   --Defining the center of the game field
   OriginPointX = Game.Width / 2
   OriginPointY = Game.Height / 2
+  --Player Data
+  Player1 = {x = OriginPointX - 350, y = OriginPointY + 0, Width = 16, Height = 64}
+  Player2 = {x = OriginPointX + 350, y = OriginPointY + 0,Width = 16, Height = 64}
+  --Player Data
   ----SPACE RESERVED FOR FUNCTIONS
   function CheckInput()
     --KeyBoard Inputs for Player 1
     if love.keyboard.isDown("w") then
-      Player1.Cordsy = Player1.Cordsy - 2
+      Player1.y = Player1.y - 2
     end
 
     if love.keyboard.isDown("s") then
-      Player1.Cordsy = Player1.Cordsy + 2
+      Player1.y = Player1.y + 2
     end
     --Input for Player2 and only works when Ai mode is 0
     if AiMode == 0 then
       if love.keyboard.isDown("up") then
-        Player2.Cordsy = Player2.Cordsy -2
+        Player2.y = Player2.y -2
       end
       if love.keyboard.isDown("down") then
-        Player2.Cordsy = Player2.Cordsy +2
+        Player2.y = Player2.y +2
       end
     end
   end
 
+  function BoundaryCheck()
+    Player1.bottomcheck = Player1.y + Player1.Height
+    if Player1.bottomcheck >= 600 then
+      Player1.y = 600 - Player1.Height
+    end
+    if Player1.y <= 0 then
+
+      Player1.y = 0
+
+    end
+    Player2.bottomcheck = Player2.y + Player1.Height
+    if Player2.bottomcheck >= 600 then
+      Player2.y = 600 - Player2.Height
+    end
+    if Player2.y <= 0 then
+
+      Player2.y = 0
+
+    end
+
+
+
+  end
 
 
 
@@ -44,6 +70,7 @@ end
 
 function love.update(dt)
   CheckInput()
+  BoundaryCheck()
 
   function love.keypressed( key, scancode, isrepeat )
     if key == "escape" then
@@ -57,20 +84,6 @@ function love.update(dt)
     end
   end
 
--- Collsion Boundieris
-  if Player1.Cordsy <= -300 then
-    Player1.Cordsy = Player1.Cordsy + 2
-  end
-if Player1.Cordsy >= 236 then
-  Player1.Cordsy = Player1.Cordsy - 2
-end
-
-if Player2.Cordsy <= -300 then
-  Player2.Cordsy = Player1.Cordsy + 2
-end
-if Player2.Cordsy >= 236 then
-Player2.Cordsy = Player1.Cordsy - 2
-end
 
 end
 function love.draw()
@@ -80,13 +93,13 @@ function love.draw()
 
   --Makes Debug Shapes Green as they shoud never be seen ingame
   love.graphics.setColor(0, 1, 0, 1)
-  love.graphics.print(Player1.Cordsy,OriginPointX,OriginPointY)
+  love.graphics.print(Player1.y,OriginPointX,OriginPointY)
 
   --Drawing Player1
-  love.graphics.rectangle("fill",OriginPointX + Player1.Cordsx,OriginPointY + Player1.Cordsy ,Player1.Width, Player1.Height)
+  love.graphics.rectangle("fill",Player1.x,Player1.y,Player1.Width, Player1.Height)
 
   --Drawing Player2
-  love.graphics.rectangle("fill",OriginPointX + Player2.Cordsx,OriginPointY + Player2.Cordsy ,Player2.Width, Player2.Height)
+  love.graphics.rectangle("fill",Player2.x,Player2.y,Player2.Width, Player2.Height)
 
   --Poping graphics
   love.graphics.pop()
