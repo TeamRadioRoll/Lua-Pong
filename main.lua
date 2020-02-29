@@ -1,19 +1,19 @@
 function love.load()
   --Making MostImportant Variables
-
   Player1 = {Cordsx = -350, Cordsy = 0, Width = 16, Height = 64}
   Player2 = {Cordsx = 350, Cordsy = 0,Width = 16, Height = 64}
   AiMode = 0
-
-  --Defining the center of the game field
-  OriginPointX, OriginPointY = love.graphics.getPixelDimensions()
-  OriginPointX = OriginPointX / 2
-  OriginPointY = OriginPointY / 2
 
   Game = {}
   Game.Width = 800
   Game.Height = 600
   Game.FullScreen = false
+  Game.NegWidth = Game.Width * -1
+  Game.Negheight = Game.Height * -1
+
+  --Defining the center of the game field
+  OriginPointX = Game.Width / 2
+  OriginPointY = Game.Height / 2
   ----SPACE RESERVED FOR FUNCTIONS
   function CheckInput()
     --KeyBoard Inputs for Player 1
@@ -56,6 +56,22 @@ function love.update(dt)
       end
     end
   end
+
+-- Collsion Boundieris
+  if Player1.Cordsy <= -300 then
+    Player1.Cordsy = Player1.Cordsy + 2
+  end
+if Player1.Cordsy >= 236 then
+  Player1.Cordsy = Player1.Cordsy - 2
+end
+
+if Player2.Cordsy <= -300 then
+  Player2.Cordsy = Player1.Cordsy + 2
+end
+if Player2.Cordsy >= 236 then
+Player2.Cordsy = Player1.Cordsy - 2
+end
+
 end
 function love.draw()
   love.graphics.push()
@@ -64,6 +80,7 @@ function love.draw()
 
   --Makes Debug Shapes Green as they shoud never be seen ingame
   love.graphics.setColor(0, 1, 0, 1)
+  love.graphics.print(Player1.Cordsy,OriginPointX,OriginPointY)
 
   --Drawing Player1
   love.graphics.rectangle("fill",OriginPointX + Player1.Cordsx,OriginPointY + Player1.Cordsy ,Player1.Width, Player1.Height)
