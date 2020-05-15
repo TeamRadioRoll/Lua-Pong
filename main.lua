@@ -16,7 +16,8 @@ function love.load()
   --Player Data
   Player1 = {x = OriginPointX - 350, y = OriginPointY + 0, Width = 16, Height = 64}
   Player2 = {x = OriginPointX + 350, y = OriginPointY + 0,Width = 16, Height = 64}
-  --Player Data
+  --Ball Data
+  Ball = {x = OriginPointX,y = OriginPointY,Width = 16,Height = 16,Velocityx = -2.5,Velocityy = 0}
   ----SPACE RESERVED FOR FUNCTIONS
   function CheckInput()
     --KeyBoard Inputs for Player 1
@@ -57,13 +58,22 @@ function love.load()
       Player2.y = 0
 
     end
+    function BallPyhsics()
+      Ball.y = Ball.y + Ball.Velocityy
+      Ball.x = Ball.x + Ball.Velocityx
+      if Ball.x >= Player1.x then
 
 
-
+    end
+  end
+function CollisonCheck()
+  if Player1.y  >= Ball.y and Player1.x - 64 >= Ball.x then
+    Player1.x = 200
   end
 
+end
 
-
+  end
 
   ----SPACE RESVERED END
 end
@@ -71,6 +81,8 @@ end
 function love.update(dt)
   CheckInput()
   BoundaryCheck()
+  BallPyhsics()
+  CollisonCheck()
 
   function love.keypressed( key, scancode, isrepeat )
     if key == "escape" then
@@ -85,6 +97,7 @@ function love.update(dt)
   end
 
 
+
 end
 function love.draw()
   love.graphics.push()
@@ -93,7 +106,6 @@ function love.draw()
 
   --Makes Debug Shapes Green as they shoud never be seen ingame
   love.graphics.setColor(0, 1, 0, 1)
-  love.graphics.print(Player1.y,OriginPointX,OriginPointY)
 
   --Drawing Player1
   love.graphics.rectangle("fill",Player1.x,Player1.y,Player1.Width, Player1.Height)
@@ -101,7 +113,8 @@ function love.draw()
   --Drawing Player2
   love.graphics.rectangle("fill",Player2.x,Player2.y,Player2.Width, Player2.Height)
 
+  --Drawing Ball
+  love.graphics.rectangle("fill", Ball.x, Ball.y, Ball.Width, Ball.Height)
   --Poping graphics
   love.graphics.pop()
-
 end
