@@ -1,6 +1,6 @@
 function love.load()
   --Making MostImportant Variables
-  math.randomseed(os.time())
+
   AiMode = 0
 
   Game = {}
@@ -15,40 +15,32 @@ function love.load()
   OriginPointY = Game.Height / 2
   --Player Data
   
-  Player1 = {x = OriginPointX - 350, y = OriginPointY + 0, Width = 16, Height = 64,isMoving = 0}
-  Player2 = {x = OriginPointX + 350, y = OriginPointY + 0,Width = 16, Height = 64,isMoving = 0}
+  Player1 = {x = OriginPointX - 350, y = OriginPointY + 0, Width = 16, Height = 64}
+  Player2 = {x = OriginPointX + 350, y = OriginPointY + 0,Width = 16, Height = 64}
 
   --Ball Data
-  Ball = {x = OriginPointX,y = OriginPointY,Width = 16,Height = 16,Angle = 0,Speedx = -2,Speedy = 0}
+  Ball = {x = OriginPointX,y = OriginPointY,Width = 16,Height = 16,Velocityx = -2.5,Velocityy = 0}
   ----SPACE RESERVED FOR FUNCTIONS
   function CheckInput()
     --KeyBoard Inputs for Player 1
-    if love.keyboard.isDown("w")  then
+    if love.keyboard.isDown("w") then
       Player1.y = Player1.y - 2
-      Player1.isMoving = 2
-
-    elseif love.keyboard.isDown("s") then
-      Player1.y = Player1.y + 2
-      Player1.isMoving = 1
-    else
-    Player1.isMoving = 0
     end
 
+    if love.keyboard.isDown("s") then
+      Player1.y = Player1.y + 2
+    end
 
     --Input for Player2 and only works when Ai mode is 0
     if AiMode == 0 then
       if love.keyboard.isDown("up") then
         Player2.y = Player2.y -2
-        Player2.isMoving = 1
-    
+      end
       
-    elseif love.keyboard.isDown("down") then
+      if love.keyboard.isDown("down") then
         Player2.y = Player2.y +2
-        Player2.isMoving = 2
-    else 
-      Player2.isMoving = 0
+      end
     end
-
   end
 
   function BoundaryCheck()
@@ -71,35 +63,17 @@ function love.load()
 
     end
     function BallPyhsics()
-      Ball.x = Ball.Speedx + Ball.x
-      Ball.y = Ball.Speedy + Ball.y
+      Ball.y = Ball.y + Ball.Velocityy
+      Ball.x = Ball.x + Ball.Velocityx
   end
-    function CollisonCheck(Col1,Col2)
-  if Col1.x + Col1.Width == Col2.x + Col2.Width and  Col2.x ~= Col1.x then
+    function CollisonCheck()
+	if Player1.x < Ball.x or Ball.x < Player1.x then
+		Ball.Velocityx = Ball.Velocityx * -1
+ 	end
 
-    if Col1.y  == Col2.y or Col1.y + Col1.Height <= Col2.y then
-
-      if Col1.isMoving == 0 then
-        Col2.Speedx = Col2.Speedx * -1
-        Col2.Speedy = 1.25
-      end
-      if Col1.isMoving == 1 then
-        Col2.Speedx = Col2.Speedx * math.random(-0.75,-1.25)
-        Col2.Speedy = Col2.Speedy + 2
-      end
-      if Col1.isMoving == 2 then
-        Col2.Speedx = Col2.Speedx * math.random(-0.75,-1.25)
-        Col2.Speedy = Col2.Speedy - 2
-      end
-
-
-    end
-   end
-  end
-  end
 end
 
-
+  end
 
 
   function Debug(DebugFlag)
@@ -109,17 +83,7 @@ end
 		  print("BAllCords")
 		  print(Ball.x)
 		  print(Ball.y)
-  end
-  function BallBoundry()
-
-    if Ball.y - Ball.Height >= 600 then
-      Ball.Speedy = Ball.Speedy * -1
-    end 
-    if Ball.y - Ball.Height <= 0 then
-      Ball.Speedy = Ball.Speedy * -1
-    end
-
-  end
+	end
 
   ----SPACE RESVERED END
 end
@@ -128,9 +92,7 @@ function love.update(dt)
   CheckInput()
   BoundaryCheck()
   BallPyhsics()
-  CollisonCheck(Player1,Ball)
-  CollisonCheck(Player2,Ball)
-  BallBoundry()
+  CollisonCheck()
   Debug()
 
   function love.keypressed( key, scancode, isrepeat )
